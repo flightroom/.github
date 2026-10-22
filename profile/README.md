@@ -70,6 +70,39 @@ Whichever you choose, the
 takes you from an empty project to a deployed micro frontend — and back with a
 one-click rollback.
 
+## Use it from your AI client (MCP)
+
+Flightroom runs a remote [MCP](https://modelcontextprotocol.io) server: Claude,
+ChatGPT, Gemini, Claude Code, Cursor, VS Code and Gemini CLI can read your
+projects, manage micro frontends and services, and deploy, with your role on
+each project. The client signs in with OAuth and you pick the projects it may
+use.
+
+**Server URL:** `https://console.flightroom.dev/api/mcp` — on a self-hosted
+install, `https://<your console>/api/mcp`.
+
+```bash
+# Claude Code (then run /mcp to sign in)
+claude mcp add --transport http flightroom https://console.flightroom.dev/api/mcp
+```
+
+```jsonc
+// Cursor: ~/.cursor/mcp.json
+{ "mcpServers": { "flightroom": { "url": "https://console.flightroom.dev/api/mcp" } } }
+
+// VS Code: .vscode/mcp.json
+{ "servers": { "flightroom": { "type": "http", "url": "https://console.flightroom.dev/api/mcp" } } }
+
+// Gemini CLI: ~/.gemini/settings.json (then /mcp auth flightroom)
+{ "mcpServers": { "flightroom": { "httpUrl": "https://console.flightroom.dev/api/mcp" } } }
+```
+
+In Claude, ChatGPT or Gemini, add the URL as a custom connector. Clients that
+cannot do OAuth can send a project API key as `Authorization: Bearer <key>`.
+Self-hosted installs turn the server on with `MCP_ENABLED=true` and their own
+`JWT_SECRET`. Everything else is in the
+[MCP server guide](https://flightroom.dev/documentation/docs/build-with-ai/mcp-server/).
+
 ## The repositories
 
 | Repository | What it is |
