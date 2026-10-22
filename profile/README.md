@@ -1,43 +1,70 @@
-# MFE Orchestrator
+# Flightroom
 
-**The open-source control plane for micro frontends.** It stores every build
-you publish, decides which version each environment serves, and hands your host
-application the runtime configuration it needs — so releasing one micro
-frontend never means rebuilding the shell.
+**The open-source control plane for micro frontends.** Flightroom stores every
+build you publish, decides which version each environment serves, and hands
+your host application the runtime configuration it needs — so releasing one
+micro frontend never means rebuilding the shell.
 
-🔗 **Website:** [mfe-orchestrator.dev](https://mfe-orchestrator.dev/) ·
-📖 **Documentation:** [mfe-orchestrator.dev/documentation](https://mfe-orchestrator.dev/documentation/) ·
-🖥️ **Hosted console:** [console.mfe-orchestrator.dev](https://console.mfe-orchestrator.dev/)
+🔗 **Website:** [flightroom.dev](https://flightroom.dev/) ·
+📖 **Documentation:** [flightroom.dev/documentation](https://flightroom.dev/documentation/) ·
+🖥️ **Hosted console:** [console.flightroom.dev](https://console.flightroom.dev/)
 
-## Why it exists
+> Flightroom was previously called **MFE Orchestrator**. Same project, new name.
 
-Micro frontends promise independent deployment. Most setups do not deliver it,
-because the host application still decides at build time what to load: the list
-of remotes lives in the host repository, releasing one widget means rebuilding
-the shell, and a rollback is a revert, a rebuild and a wait.
+## What it does
 
-MFE Orchestrator moves that decision to runtime. Versions live in a registry,
-every deployment is an immutable snapshot per environment, the Module
-Federation configuration (Vite or Webpack) is generated for you, and rolling
-back is re-activating the snapshot that was live before — no rebuild, no
-pipeline wait. Artifacts stay wherever you need them: on the hub, in your own
-S3 / Azure Blob / Google Cloud Storage bucket, on your CDN, or entirely
-on-premise.
+Micro frontends promise independent deployment, but most setups still decide at
+build time what the host loads: releasing one widget means rebuilding the shell,
+and a rollback is a revert, a rebuild and a wait. Flightroom moves that decision
+to runtime.
 
-## Try it in 60 seconds
+- **Independent releases** — publish a micro frontend, assign the version to an
+  environment, press **Deploy**. The host application is untouched.
+- **One-click rollback** — every deployment is an immutable snapshot; rolling
+  back is re-activating the previous one. No rebuild, no pipeline wait.
+- **One build, every environment** — per-environment variables reach the
+  browser at boot, so the same artifact serves DEV, UAT and PROD.
+- **Module Federation, configured for you** — the console generates the Vite or
+  Webpack configuration your host needs.
+- **Your storage, your rules** — artifacts live on the hub, in your own S3,
+  Azure Blob or Google Cloud Storage bucket, on your CDN, or fully on-premise.
+- **CI/CD included** — ready-made pipelines for GitHub Actions, GitLab CI and
+  Azure DevOps, plus an API for everything else.
+- **Canary releases** — roll out a new version to a percentage of traffic, a
+  sticky share of browsers or an explicit list of users.
 
-**Hosted console — nothing to install.** Start free at
-[console.mfe-orchestrator.dev](https://console.mfe-orchestrator.dev/).
+## Get Flightroom
 
-**Self-hosted — one container**, with MongoDB, Redis and Nginx bundled:
+**Hosted — nothing to install.** Sign up free at
+[console.flightroom.dev](https://console.flightroom.dev/).
+
+**Self-hosted — one container.** The all-in-one image bundles Flightroom,
+MongoDB, Redis and Nginx:
 
 ```bash
-docker run -d --name mfe-orchestrator --restart unless-stopped \
-  -p 8080:80 -v mfe-data:/data lory1990/mfe-orchestrator:all-in-one
+docker run -d --name flightroom --restart unless-stopped \
+  -p 8080:80 -v flightroom-data:/data flightroom/flightroom:all-in-one
 ```
 
-Either way, the
-[**10-minute quick start**](https://mfe-orchestrator.dev/documentation/docs/quick-start)
+Open http://localhost:8080 and create the first user.
+
+**Self-hosted — production setups.** Clone the
+[main repository](https://github.com/flightroom/flightroom) and pick the
+deployment that fits your infrastructure:
+
+```bash
+git clone https://github.com/flightroom/flightroom.git
+cd flightroom
+docker compose up -d
+```
+
+A [Helm chart](https://github.com/flightroom/flightroom/tree/main/helm) for
+Kubernetes and a
+[Terraform / OpenTofu template](https://github.com/flightroom/flightroom/tree/main/terraform)
+live in the same repository.
+
+Whichever you choose, the
+[**10-minute quick start**](https://flightroom.dev/documentation/docs/quick-start)
 takes you from an empty project to a deployed micro frontend — and back with a
 one-click rollback.
 
@@ -45,112 +72,36 @@ one-click rollback.
 
 | Repository | What it is |
 | --- | --- |
-| [mfe-orchestrator](https://github.com/mfe-orchestrator/mfe-orchestrator) | The platform: backend, console and self-hosting assets (Docker, Compose, Terraform, Helm) |
-| [documentation](https://github.com/mfe-orchestrator/documentation) | The documentation site — [mfe-orchestrator.dev/documentation](https://mfe-orchestrator.dev/documentation/) |
-| [mfe-orchestrator.github.io](https://github.com/mfe-orchestrator/mfe-orchestrator.github.io) | The public website — [mfe-orchestrator.dev](https://mfe-orchestrator.dev/) |
-| [design-system](https://github.com/mfe-orchestrator/design-system) | The shared React design system used by the console, the website and the docs |
-
-**CI/CD integrations** — your pipeline gains one upload step:
-
-| Repository | What it is |
-| --- | --- |
-| [github-action](https://github.com/mfe-orchestrator/github-action) | GitHub Action ([on the Marketplace](https://github.com/marketplace/actions/microfrontend-orchestrator-uploader)) |
-| [gitlab-pipeline-stage](https://github.com/mfe-orchestrator/gitlab-pipeline-stage) | GitLab CI stage |
-| [azure-dev-ops-pipeline-stage](https://github.com/mfe-orchestrator/azure-dev-ops-pipeline-stage) | Azure DevOps pipeline stage |
-| [template-pipelines](https://github.com/mfe-orchestrator/template-pipelines) | Pipeline templates used by the generated repositories |
-
-**Templates** — what the console scaffolds when you create a micro frontend:
-
-| Repository | What it is |
-| --- | --- |
-| [template-vite-remote](https://github.com/mfe-orchestrator/template-vite-remote) / [template-vite-host](https://github.com/mfe-orchestrator/template-vite-host) | Vite Module Federation remote and host |
-| [template-webpack-react-remote](https://github.com/mfe-orchestrator/template-webpack-react-remote) / [template-webpack-react-host](https://github.com/mfe-orchestrator/template-webpack-react-host) | Webpack Module Federation remote and host |
-| [template-webcomponent-remote](https://github.com/mfe-orchestrator/template-webcomponent-remote) | Web Components remote |
-| [webcomponent-dynamic-loader](https://github.com/mfe-orchestrator/webcomponent-dynamic-loader) | Runtime loader for Web Components remotes |
+| [flightroom](https://github.com/flightroom/flightroom) | The platform: backend, console and self-hosting assets (Docker, Compose, Terraform, Helm) |
+| [documentation](https://github.com/flightroom/documentation) | The documentation site — [flightroom.dev/documentation](https://flightroom.dev/documentation/) |
+| [flightroom.github.io](https://github.com/flightroom/flightroom.github.io) | The public website — [flightroom.dev](https://flightroom.dev/) |
+| [design-system](https://github.com/flightroom/design-system) | The shared React design system used by the console, the website and the docs |
+| [template-service-node-fastify](https://github.com/flightroom/template-service-node-fastify) · [template-service-spring-boot](https://github.com/flightroom/template-service-spring-boot) · [template-service-quarkus](https://github.com/flightroom/template-service-quarkus) · [template-service-python-fastapi](https://github.com/flightroom/template-service-python-fastapi) | Backend service templates |
 
 ## Contribute
 
-MFE Orchestrator is built in the open, and there is more than one way to move it
-forward — writing TypeScript is only one of them.
+Every repository accepts pull requests: fork → branch → conventional commit →
+pull request. The
+[main README](https://github.com/flightroom/flightroom#contributing-) covers the
+local development setup. Good places to start are issues labelled
+[good first issue](https://github.com/flightroom/flightroom/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22),
+the documentation, and CI/CD adapters for the vendors we do not support yet
+(Jenkins, Bitbucket Pipelines, CircleCI, …).
 
-### Spread the word
-
-The project is young, and the hardest problem is being found by the teams who
-need it. Star the
-[main repository](https://github.com/mfe-orchestrator/mfe-orchestrator), share it
-where micro frontend problems get discussed — Reddit, Hacker News, dev.to,
-LinkedIn, your company Slack — write a post about the setup you ended up with, or
-talk about it at a meetup. If you already run micro frontends in production, a
-short honest write-up of how you release them is worth more than anything we can
-put on a landing page.
-
-### Write code
-
-Every repository listed above accepts pull requests. Good places to start:
-
-- issues labelled
-  [good first issue](https://github.com/mfe-orchestrator/mfe-orchestrator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-  and
-  [help wanted](https://github.com/mfe-orchestrator/mfe-orchestrator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
-  on the platform;
-- the [documentation](https://github.com/mfe-orchestrator/documentation) — a page
-  that confused you is a page worth fixing;
-- the [templates](#the-repositories), if the framework or bundler you use is
-  missing one.
-
-The workflow is the usual fork → branch → conventional commit → pull request. The
-[contributing section of the main README](https://github.com/mfe-orchestrator/mfe-orchestrator#contributing-)
-covers the local development setup and the code quality rules the pipeline
-enforces (Biome, commitlint, Lefthook).
-
-### Build a CI/CD adapter
-
-We ship adapters for GitHub Actions, GitLab CI and Azure DevOps. Everything else
-— Jenkins, Bitbucket Pipelines, CircleCI, Buildkite, Drone, TeamCity, Woodpecker,
-Travis — is still missing, and each one unblocks every team standardised on that
-vendor.
-
-An adapter is deliberately thin: take the build output, upload it to the
-orchestrator with an API key, and let the console handle versions and
-deployments. Start from
-[manual upload](https://mfe-orchestrator.dev/documentation/docs/ci-cd/manual-upload)
-to see what the API expects, then read the
-[GitHub Action](https://github.com/mfe-orchestrator/github-action) or the
-[GitLab CI stage](https://github.com/mfe-orchestrator/gitlab-pipeline-stage) as a
-reference implementation. Open an issue on
-[.github](https://github.com/mfe-orchestrator/.github/issues) before you start so
-nobody duplicates the work — we will create the repository for you.
-
-### Test, test, test
-
-The quickest way to make the project better is to use it and report what breaks.
-Run the [quick start](https://mfe-orchestrator.dev/documentation/docs/quick-start)
-on your own stack, self-host it, push it somewhere it was not designed to go. A
-bug report with clear steps to reproduce is a real contribution.
-
-The paths that benefit most from being exercised outside our machines:
-
-- **self-hosting** — Docker Compose, Terraform / OpenTofu, Helm on your cluster,
-  SSO against your identity provider;
-- **storage backends** — AWS S3, Azure Blob, Google Cloud Storage, your CDN, or
-  fully on-premise;
-- **hosts and bundlers** — Vite and Webpack Module Federation, Web Components,
-  and whatever combination your shell actually uses;
-- **canary releases**, still experimental and hungry for real traffic.
-
-Report what you find in the repository concerned, or on
-[.github](https://github.com/mfe-orchestrator/.github/issues) if you are not sure
-which one that is.
+Using Flightroom and reporting what breaks is just as valuable: open an issue in
+the repository concerned, or on
+[.github](https://github.com/flightroom/.github/issues) if you are not sure
+which one.
 
 ## License
 
 The platform is licensed under
-[Apache-2.0](https://github.com/mfe-orchestrator/mfe-orchestrator/blob/main/LICENSE);
-the surrounding tooling and templates are MIT. Each repository carries its own
+[Apache-2.0](https://github.com/flightroom/flightroom/blob/main/LICENSE); the
+surrounding tooling and templates are MIT. Each repository carries its own
 LICENSE file.
 
 ---
 
-If MFE Orchestrator is useful to you, a
-[⭐ on the main repository](https://github.com/mfe-orchestrator/mfe-orchestrator)
-helps the project get found.
+If Flightroom is useful to you, a
+[⭐ on the main repository](https://github.com/flightroom/flightroom) helps the
+project get found.
