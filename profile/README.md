@@ -1,3 +1,5 @@
+![Flightroom, the open-source control room for micro frontends](banner.png)
+
 # Flightroom
 
 **The open-source control plane for micro frontends.** Flightroom stores every
